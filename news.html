@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animesh News Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Header */
+        header {
+            background-color: #2C3E50;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        /* Welcome Message */
+        .welcome-msg {
+            text-align: right;
+            font-size: 1rem;
+            margin-top: -20px;
+            color: #3498db;
+        }
+
+        /* User Name Input Modal */
+        .modal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.3s, opacity 0.3s;
+        }
+
+        .modal.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .modal-content input {
+            padding: 10px;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .modal-content button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal-content button:hover {
+            background-color: #2980b9;
+        }
+
+        /* News Section */
+        .news-section {
+            margin: 30px;
+        }
+
+        .news-section h2 {
+            font-size: 1.8rem;
+            color: #2C3E50;
+            margin-bottom: 15px;
+        }
+
+        .news-items {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Default 2 items per row on larger screens */
+            gap: 15px;
+        }
+
+        .news-item {
+            background-color: #fff;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .news-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .news-item h3 {
+            font-size: 1.5rem;
+            color: #3498db;
+            margin: 10px 0;
+        }
+
+        .news-item p {
+            color: #555;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .news-item .read-more-btn {
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .news-item .read-more-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Categories Section */
+        .categories {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .categories a {
+            padding: 10px 15px;
+            margin: 0 10px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .categories a:hover {
+            background-color: #2980b9;
+        }
+
+        /* Cricket Scorebox (CricBuzz-like) */
+        .scorecard-box {
+            width: 100%;
+            margin: 30px 0;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .scorecard-box h3 {
+            font-size: 1.5rem;
+            color: #2C3E50;
+            text-align: center;
+        }
+
+        .player-stats-header {
+            display: flex;
+            justify-content: space-between;
+            background-color: #f0f0f5;
+            padding: 8px;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+        .player-stats-header div {
+            flex: 1;
+            text-align: center;
+        }
+
+        .player-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .player-row:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+
+        .player-row div {
+            flex: 1;
+            text-align: center;
+            padding: 5px;
+        }
+
+        .scorecard-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .scorecard-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .full-scorecard {
+            display: none;
+        }
+
+        /* Light & Dark Mode */
+        body.dark-mode {
+            background-color: #2C3E50;
+            color: #ecf0f1;
+        }
+
+        body.dark-mode header {
+            background-color: #1A252F;
+        }
+
+        body.dark-mode .scorecard-box,
+        body.dark-mode .news-item {
+            background-color: #34495E;
+        }
+
+        body.dark-mode .categories a {
+            background-color: #2C3E50;
+        }
+
+        body.dark-mode .categories a:hover {
+            background-color: #1A252F;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #2C3E50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Responsive for smaller screens */
+        @media (max-width: 768px) {
+            .news-items {
+                grid-template-columns: 1fr; /* One item per row on mobile */
+            }
+        }
+
+        /* Google Translate Button */
+        #google_translate_element {
+            margin: 15px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Animesh News Portal</h1>
+    <div class="welcome-msg" id="welcome-msg">Welcome, Guest!</div>
+</header>
+
+<!-- Google Translate Button -->
+<div id="google_translate_element"></div>
+
+<!-- User Name Input Modal -->
+<div id="user-input-modal" class="modal">
+    <div class="modal-content">
+        <h3>Enter Your Name</h3>
+        <input type="text" id="user-name" placeholder="Enter your name" />
+        <button onclick="saveUserName()">Save</button>
+    </div>
+</div>
+
+<!-- Categories Section -->
+<div class="categories">
+    <a href="#">Sports</a>
+    <a href="#">Money</a>
+    <a href="#">Tech</a>
+    <a href="#">Entertainment</a>
+    <a href="#">Health</a>
+</div>
+
+<!-- Cricket Scorecard -->
+<div class="scorecard-box">
+    <h3>India vs Australia - Full Scorecard</h3>
+    <div class="player-stats-header">
+        <div>Batsman</div>
+        <div>Runs</div>
+        <div>Balls</div>
+        <div>4s</div>
+        <div>6s</div>
+        <div>SR</div>
+        <div>Status</div>
+        <div>Bowler</div>
+        <div>Fielder</div>
+    </div>
+
+    <!-- Player 1 Row -->
+    <div class="player-row">
+        <div>Rohit Sharma</div>
+        <div>50</div>
+        <div>30</div>
+        <div>6</div>
+        <div>2</div>
+        <div>166.67</div>
+        <div>Out</div>
+        <div>Pat Cummins</div>
+        <div>Steve Smith</div>
+    </div>
+
+    <!-- Player 2 Row -->
+    <div class="player-row">
+        <div>Virat Kohli</div>
+        <div>35</div>
+        <div>28</div>
+        <div>4</div>
+        <div>1</div>
+        <div>125.00</div>
+        <div>Not Out</div>
+        <div>Mitchell Starc</div>
+        <div>David Warner</div>
+    </div>
+
+    <button class="scorecard-btn" onclick="toggleScorecard()">View Full Scorecard</button>
+    <div class="full-scorecard">
+        <p>Additional details about the full scorecard...</p>
+    </div>
+</div>
+
+<!-- News Section -->
+<div class="news-section">
+    <h2>Latest News</h2>
+    <div class="news-items">
+        <!-- News Item 1 -->
+        <div class="news-item">
+            <img src="https://via.placeholder.com/800x400" alt="News Image">
+            <h3>Breaking News: Economy Trends</h3>
+            <p>Summary of breaking news about economy trends...</p>
+            <button class="read-more-btn" onclick="toggleNews(this)">Read More</button>
+            <div class="full-news" style="display: none;">
+                <p>Full content about economy trends...</p>
+            </div>
+        </div>
+
+        <!-- News Item 2 -->
+        <div class="news-item">
+            <img src="https://via.placeholder.com/800x400" alt="News Image">
+            <h3>Sports Update: Cricket Highlights</h3>
+            <p>Summary of the cricket match highlights...</p>
+            <button class="read-more-btn" onclick="toggleNews(this)">Read More</button>
+            <div class="full-news" style="display: none;">
+                <p>Full details of the cricket match...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2024 Animesh News Portal. All Rights Reserved.</p>
+</footer>
+
+<script>
+    // Show modal on page load
+    window.onload = function() {
+        document.getElementById('user-input-modal').classList.add('show');
+    };
+
+    // Save user name and close modal
+    function saveUserName() {
+        const name = document.getElementById('user-name').value;
+        if (name) {
+            document.getElementById('welcome-msg').innerText = 'Welcome, ' + name;
+            document.getElementById('user-input-modal').classList.remove('show');
+        }
+    }
+
+    // Toggle Full News on Read More click
+    function toggleNews(button) {
+        const fullNews = button.nextElementSibling;
+        if (fullNews.style.display === 'none') {
+            fullNews.style.display = 'block';
+            button.innerText = 'Read Less';
+        } else {
+            fullNews.style.display = 'none';
+            button.innerText = 'Read More';
+        }
+    }
+
+    // Toggle Full Scorecard on View Full Scorecard click
+    function toggleScorecard() {
+        const fullScorecard = document.querySelector('.full-scorecard');
+        fullScorecard.style.display = fullScorecard.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // Google Translate functionality
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            includedLanguages: 'en,es,fr,de,it,ja,zh,hi',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+    }
+</script>
+
+<!-- Google Translate Script -->
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>
